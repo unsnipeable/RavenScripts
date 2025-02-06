@@ -2,7 +2,7 @@
 boolean start, allow,fbclicked,migi,nearfb,bang = true,LL;
         int ticks,slot,clicktick,tickss,bindz;
 
-String[] modez = new String[]{"Vanilla","Flat"};
+String[] modez = new String[]{"Vanilla","Flat","High"};
 String[] modes = new String[]{"None", "Toggle", "Auto"};
 
 
@@ -20,18 +20,16 @@ void onLoad() {
 
 
     modules.registerDescription("ScaffoldLJ");
-    modules.registerSlider("Scaffold",2,modes);
+    modules.registerSlider("Scaffold",1,modes);
     modules.registerDescription(util.color("&7- &9NONE&7: &fLJ only"));
     modules.registerDescription(util.color("&7- &9TOGGLE&7: &fLJ + enable Scaf"));
     modules.registerDescription(util.color("&7- &9AUTO&7: &fLJ + enable/disable Scaf"));
     modules.registerSlider("Mode",1,modez);
-    modules.registerDescription(util.color("&7- &9VANILLA&7: &fNormal"));
-    modules.registerDescription(util.color("&7- &9FLAT&7: &fFlat"));
+    modules.registerDescription(util.color("&7- &9VANILLA"));
+    modules.registerDescription(util.color("&7- &9FLAT"));
+    modules.registerDescription(util.color("&7- &9HIGH"));
     modules.registerButton("Mode Switcher",true);
     modules.registerSlider("Switcher keybind", "", 20, keyNames);
-    modules.registerButton("Keybinds",false);
-    modules.registerSlider("Flat keybind", "", 15, keyNames);
-    modules.registerSlider("Vanilla keybind", "", 16, keyNames);
 
     modules.registerDescription("LongJump");
     modules.registerButton("Higher precision",false);
@@ -44,42 +42,37 @@ void onLoad() {
 
     modules.registerDescription("Log Settings");
     modules.registerButton("scaffold log",false);
-    modules.registerDescription(util.color("&7- &fscaffold log (on&off)"));
+    modules.registerDescription(util.color("&7- &fscaffold log (on off)"));
     modules.registerButton("longjump log",true);
-    modules.registerDescription(util.color("&7- &flongjump log (on&off)"));
+    modules.registerDescription(util.color("&7- &flongjump log (on off)"));
 }
 
 void onPostPlayerInput() {
-    boolean down = keybinds.isKeyDown(keybinds.getKeyIndex(keyNames[(int)modules.getSlider(scriptName,"Switcher keybind")]));
-    boolean down1 = keybinds.isKeyDown(keybinds.getKeyIndex(keyNames[(int)modules.getSlider(scriptName,"Flat keybind")]));
-    boolean down2 = keybinds.isKeyDown(keybinds.getKeyIndex(keyNames[(int)modules.getSlider(scriptName,"Vanilla keybind")]));
+    unti();
+}
 
+void unti() {
+
+    String guiName = client.getScreen();
+    if (guiName != "") return;
+    boolean down = keybinds.isKeyDown(keybinds.getKeyIndex(keyNames[(int)modules.getSlider(scriptName,"Switcher keybind")]));
     if (down && modules.getButton(scriptName,"Mode Switcher")) {
         if (LL) return;
         LL = true;
         bindz++;
-        if (bindz == 2) bindz = 0;
+        if (bindz == 3) bindz = 0;
         if (bindz == 0) {
             modules.setSlider(scriptName,"Mode",1);
             client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         } else if(bindz == 1) {
             modules.setSlider(scriptName,"Mode",0);
             client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+        } else if(bindz == 2) {
+            modules.setSlider(scriptName,"Mode",2);
+            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         }
     }
     if (!down) LL = false;
-
-    if (down1 && modules.getButton(scriptName,"Keybinds")) {
-        if (modules.getSlider(scriptName,"Mode") == 1.0) return;
-        modules.setSlider(scriptName,"Mode",1);
-        client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
-    }  else if (down2 && modules.getButton(scriptName,"Keybinds")) {
-        if (modules.getSlider(scriptName,"Mode") == 0.0) return;
-        modules.setSlider(scriptName,"Mode",0);
-        client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
-    }
-
-    down1 = down2 = false;
 }
 
 void onPreUpdate() {
@@ -93,7 +86,9 @@ void onPreUpdate() {
         if (ent.getPosition().distanceTo(client.getPlayer().getPosition()) <= 4 && ent.type.contains("Fireball")) nearfb = true;
     }
 
-    if (fbclicked) {clicktick = 0;}
+    if (fbclicked) {
+        clicktick = 0;
+    }
     if (keybinds.isMouseDown(1)) {
         tickss = 0;
         migi = true;
@@ -125,6 +120,8 @@ void onPreUpdate() {
         }
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Flat") client.setMotion(motion.x,0.01,motion.z);
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Vanilla") client.setMotion(motion.x,0.35,motion.z);
+        if (modez[(int)modules.getSlider(scriptName,"Mode")] == "High") client.setMotion(motion.x * 0.94,0.42,motion.z * 0.94);
+        if (modez[(int)modules.getSlider(scriptName,"Mode")] == "High") client.setMotion(motion.x, 0.01,motion.z * 0.94);
     } else if (ticks >= getTickFromMode(2)) {
         if (start) {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
@@ -179,6 +176,13 @@ int getTickFromMode(int a) {
                     return 20;
                 case 2:
                     return 40;
+            }
+        case "High":
+            switch (a) {
+                case 1:
+                    return 40;
+                case 2:
+                    return 50;
             }
     }
     return 30;
