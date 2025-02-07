@@ -2,9 +2,12 @@
 boolean start, allow,fbclicked,migi,nearfb,bang = true,LL;
         int ticks,slot,clicktick,tickss,bindz;
 
-String[] modez = new String[]{"Vanilla","Flat","High"};
+String[] modez = new String[]{"Vanilla","Flat","High","SuperFlat"};
 String[] modes = new String[]{"None", "Toggle", "Auto"};
 
+
+        boolean allowedToUse = false;
+String aes = "";
 
 String[] keyNames = {
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -16,6 +19,18 @@ String[] keyNames = {
         "NUMPAD8", "NUMPAD9", "PERIOD", "RETURN", "RCONTROL", "RSHIFT", "RBRACKET", "SEMICOLON",
         "SLASH", "SPACE", "TAB", "GRAVE"
 };
+
+
+void onRenderTick(float partialTicks) {
+    String guiName = client.getScreen();
+    if (guiName == "GuiInventory") return;
+    if (guiName == "GuiMenu") return;
+    if (guiName == "GuiChest") return;
+    render.text2d(aes, client.getDisplaySize()[0] / 2 -  render.getFontWidth(aes) , client.getDisplaySize()[1] / 2 + 70, 2, 0xFFFFFF, true);
+}
+
+
+
 void onLoad() {
 
 
@@ -28,6 +43,7 @@ void onLoad() {
     modules.registerDescription(util.color("&7- &9VANILLA"));
     modules.registerDescription(util.color("&7- &9FLAT"));
     modules.registerDescription(util.color("&7- &9HIGH"));
+    modules.registerDescription(util.color("&7- &9SUPERFLAT"));
     modules.registerButton("Mode Switcher",true);
     modules.registerSlider("Switcher keybind", "", 20, keyNames);
 
@@ -39,6 +55,7 @@ void onLoad() {
     modules.registerDescription("Intro");
     modules.registerButton("Intro Skip",false);
     modules.registerDescription(util.color("&7- &fSkip the intro."));
+    modules.registerDescription(util.color("&7- &f(AD)"));
 
     modules.registerDescription("Log Settings");
     modules.registerButton("scaffold log",false);
@@ -60,7 +77,7 @@ void unti() {
         if (LL) return;
         LL = true;
         bindz++;
-        if (bindz == 3) bindz = 0;
+        if (bindz == 4) bindz = 0;
         if (bindz == 0) {
             modules.setSlider(scriptName,"Mode",1);
             client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
@@ -69,6 +86,9 @@ void unti() {
             client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         } else if(bindz == 2) {
             modules.setSlider(scriptName,"Mode",2);
+            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+        } else if(bindz == 3) {
+            modules.setSlider(scriptName,"Mode",3);
             client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         }
     }
@@ -121,7 +141,7 @@ void onPreUpdate() {
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Flat") client.setMotion(motion.x,0.01,motion.z);
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Vanilla") client.setMotion(motion.x,0.35,motion.z);
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "High") client.setMotion(motion.x * 0.94,0.42,motion.z * 0.94);
-        if (modez[(int)modules.getSlider(scriptName,"Mode")] == "High") client.setMotion(motion.x, 0.01,motion.z * 0.94);
+        if (modez[(int)modules.getSlider(scriptName,"Mode")] == "SuperFlat") client.setMotion(motion.x * 1.06, 0.01,motion.z * 1.06);
     } else if (ticks >= getTickFromMode(2)) {
         if (start) {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
@@ -184,9 +204,17 @@ int getTickFromMode(int a) {
                 case 2:
                     return 50;
             }
+        case "SuperFlat":
+            switch (a) {
+                case 1:
+                    return 40;
+                case 2:
+                    return 55;
+            }
     }
     return 30;
 }
+
 
 void onEnable() {
     client.async(()->{
@@ -194,9 +222,17 @@ void onEnable() {
         slot = inventory.getSlot();
         allow = false;
         if (modules.getButton(scriptName,"Intro Skip")) {
+            aes = util.color("&7Ad... 3");
+            client.sleep(1000);
+            aes = util.color("&7Ad... 2");
+            client.sleep(1000);
+            aes = util.color("&7Ad... 1");
+            client.sleep(1000);
+            aes = "";
             client.ping();
             client.print(util.color("&6[&dEzScLJ&6] &7Quick mode! skipping..."));
             allow = true;
+            allowedToUse = true;
             client.print(util.color("&6[&dEzScLJ&6] &7&o*ScaffLJ enabled*"));
         } else {
             client.ping();
