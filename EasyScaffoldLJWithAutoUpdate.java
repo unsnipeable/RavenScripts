@@ -25,13 +25,6 @@ String[] keyNames = {
 };
 
 
-void onRenderTick(float partialTicks) {
-    String guiName = client.getScreen();
-    if (guiName == "GuiInventory") return;
-    if (guiName == "GuiMenu") return;
-    if (guiName == "GuiChest") return;
-    render.text2d(aes, client.getDisplaySize()[0] / 2 -  render.getFontWidth(aes) , client.getDisplaySize()[1] / 2 + 70, 2, 0xFFFFFF, true);
-}
 
 
 
@@ -52,6 +45,7 @@ void onLoad() {
     modules.registerSlider("Switcher keybind", "", 20, keyNames);
 
     modules.registerDescription("LongJump");
+    modules.registerButton("Strafe",true);
     modules.registerButton("Higher precision",false);
     modules.registerDescription(util.color("&7(&4self-responsibility&7)"));
     modules.registerDescription(util.color("&7- &fLJ when only fb is nearby"));
@@ -103,6 +97,20 @@ void unti() {
         }
     }
     if (!down) LL = false;
+}
+
+    double getHorizontalSpeed() {
+        return getHorizontalSpeed(client.getPlayer());
+    }
+
+    double getHorizontalSpeed(Entity entity) {
+        return Math.sqrt(entity.getMotion().x * entity.getMotion().x + entity.getMotion().z * entity.getMotion().z);
+    }
+void onPreMotion(PlayerState state) {
+    if (client.isMoving() && modules.getButton(scriptName,"Strafe") && start) {
+        client.setSprinting(true);
+        client.setSpeed(getHorizontalSpeed() + 0.005);
+    }
 }
 
 void onPreUpdate() {
@@ -232,18 +240,14 @@ void onEnable() {
         slot = inventory.getSlot();
         allow = false;
         if (modules.getButton(scriptName,"Intro Skip")) {
-            aes = util.color("&7Ad... 3");
-            client.sleep(1000);
-            aes = util.color("&7Ad... 2");
-            client.sleep(1000);
-            aes = util.color("&7Ad... 1");
-            client.sleep(1000);
-            aes = "";
+            modules.setSlider("Long Jump", "Boost ticks", 0);
+            modules.setSlider("Long Jump", "Mode", 0);
+            modules.setButton("Long Jump", "Jump", false);
+            modules.enable("Long Jump");
             client.ping();
-            client.print(util.color(getPrefixz() + " &7Quick mode! skipping..."));
             allow = true;
             allowedToUse = true;
-            client.print(util.color(getPrefixz() + " &7&o*ScaffLJ enabled*"));
+            client.print(util.color(getPrefixz() + " &aEnabled"));
         } else {
             client.ping();
             client.print(util.color(getPrefixz() + " &7matanku: &fHi!"));
@@ -277,5 +281,3 @@ void onEnable() {
         }
     });
 }
-
-// hi
