@@ -9,6 +9,10 @@ String[] modes = new String[]{"None", "Toggle", "Auto"};
         boolean allowedToUse = false;
 String aes = "";
 
+String[] colors = {
+        "0","1", "2", "3", "4", "5", "6", "7", "8", "9","a","b","c","d","e","f"
+}
+
 String[] keyNames = {
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
         "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
@@ -52,7 +56,9 @@ void onLoad() {
     modules.registerDescription(util.color("&7(&4self-responsibility&7)"));
     modules.registerDescription(util.color("&7- &fLJ when only fb is nearby"));
 
-    modules.registerDescription("Intro");
+    modules.registerDescription("Script");
+    modules.registerSlider("Prefix color-1",5,colors);
+    modules.registerSlider("Prefix color-2",12,colors);
     modules.registerButton("Intro Skip",false);
     modules.registerDescription(util.color("&7- &fSkip the intro."));
     modules.registerDescription(util.color("&7- &f(AD)"));
@@ -68,6 +74,10 @@ void onPostPlayerInput() {
     unti();
 }
 
+String getPrefixz() {
+    return util.color("&" + colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "[&" + colors[(int)modules.getSlider(scriptName,"Prefix color-2")] "EzScLJ&" +  colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "]");
+}
+
 void unti() {
 
     String guiName = client.getScreen();
@@ -80,16 +90,16 @@ void unti() {
         if (bindz == 4) bindz = 0;
         if (bindz == 0) {
             modules.setSlider(scriptName,"Mode",1);
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         } else if(bindz == 1) {
             modules.setSlider(scriptName,"Mode",0);
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         } else if(bindz == 2) {
             modules.setSlider(scriptName,"Mode",2);
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         } else if(bindz == 3) {
             modules.setSlider(scriptName,"Mode",3);
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Mode set to: &6" + modez[(int)modules.getSlider(scriptName,"Mode")]));
         }
     }
     if (!down) LL = false;
@@ -125,7 +135,7 @@ void onPreUpdate() {
 
     if (player.getHurtTime() >= 3) {
         start = true;
-        if (modules.getButton(scriptName,"longjump log")) if (bang) client.print(util.color("&6[&dEzScLJ&6] &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Starting modify motion"));
+        if (modules.getButton(scriptName,"longjump log")) if (bang) client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Starting modify motion"));
         bang = false;
     }
     if (start) {
@@ -147,19 +157,19 @@ void onPreUpdate() {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
                 modules.disable("Scaffold");
 
-                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color("&6[&dEzScLJ&6] &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Disabled Scaffold &7(Tick)"));
+                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Disabled Scaffold &7(Tick)"));
             }
             ticks = 0;
             start = false;
             bang = true;
-            if (modules.getButton(scriptName,"longjump log")) client.print(util.color("&6[&dEzScLJ&6] &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Stopping modify motion"));
+            if (modules.getButton(scriptName,"longjump log")) client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Stopping modify motion"));
         }
     }
 
     if (player.onGround() && ticks > 5) {
         if (start) {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
-                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color("&6[&dEzScLJ&6] &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: &7OnGround"));
+                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: &7OnGround"));
                 modules.disable("Scaffold");
                 inventory.setSlot(slot);
             }
@@ -230,32 +240,32 @@ void onEnable() {
             client.sleep(1000);
             aes = "";
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7Quick mode! skipping..."));
+            client.print(util.color(getPrefixz() + " &7Quick mode! skipping..."));
             allow = true;
             allowedToUse = true;
-            client.print(util.color("&6[&dEzScLJ&6] &7&o*ScaffLJ enabled*"));
+            client.print(util.color(getPrefixz() + " &7&o*ScaffLJ enabled*"));
         } else {
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku: &fHi!"));
+            client.print(util.color(getPrefixz() + " &7matanku: &fHi!"));
             client.sleep(1500);
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku: &fMy name is matanku."));
+            client.print(util.color(getPrefixz() + " &7matanku: &fMy name is matanku."));
             client.sleep(1500);
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku: &fI will be your &dassistant &fin this system!"));
+            client.print(util.color(getPrefixz() + " &7matanku: &fI will be your &dassistant &fin this system!"));
             client.sleep(1500);
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Setting LongJump!"));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Setting LongJump!"));
             modules.setSlider("Long Jump", "Boost ticks", 0);
             modules.setSlider("Long Jump", "Mode", 0);
             modules.setButton("Long Jump", "Jump", false);
             modules.enable("Long Jump");
             client.sleep(1500);
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku&f: Mode is set to &9&l" + modes[(int)modules.getSlider(scriptName,"Scaffold")].toUpperCase()+ "&f!"));
+            client.print(util.color(getPrefixz() + " &7matanku&f: Mode is set to &9&l" + modes[(int)modules.getSlider(scriptName,"Scaffold")].toUpperCase()+ "&f!"));
             client.sleep(1500);
             client.ping();
-            client.print(util.color("&6[&dEzScLJ&6] &7matanku: &fHere we go!"));
+            client.print(util.color(getPrefixz() + " &7matanku: &fHere we go!"));
             allow = true;
             client.sleep(1500);
             client.playSound("random.levelup", 1, 0.5F);
