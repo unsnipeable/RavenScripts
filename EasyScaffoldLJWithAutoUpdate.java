@@ -6,12 +6,12 @@ String[] modez = new String[]{"Vanilla","Flat","High","SuperFlat"};
 String[] modes = new String[]{"None", "Toggle", "Auto"};
 
 
-        boolean allowedToUse = false;
+boolean allowedToUse = false;
 String aes = "";
 
 String[] colors = {
         "0","1", "2", "3", "4", "5", "6", "7", "8", "9","a","b","c","d","e","f"
-}
+};
 
 String[] keyNames = {
         "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
@@ -75,7 +75,7 @@ void onPostPlayerInput() {
 }
 
 String getPrefixz() {
-    return util.color("&" + colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "[&" + colors[(int)modules.getSlider(scriptName,"Prefix color-2")] "EzScLJ&" +  colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "]");
+    return util.color("&" + colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "[&" + colors[(int)modules.getSlider(scriptName,"Prefix color-2")] + "EzScLJ&" +  colors[(int)modules.getSlider(scriptName,"Prefix color-1")] + "]");
 }
 
 void unti() {
