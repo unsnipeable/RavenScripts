@@ -59,11 +59,6 @@ void onLoad() {
     modules.registerDescription(util.color("&7- &fSkip the intro."));
     modules.registerDescription(util.color("&7- &f(AD)"));
 
-    modules.registerDescription("Log Settings");
-    modules.registerButton("scaffold log",false);
-    modules.registerDescription(util.color("&7- &fscaffold log (on off)"));
-    modules.registerButton("longjump log",true);
-    modules.registerDescription(util.color("&7- &flongjump log (on off)"));
 }
 
 void onPostPlayerInput() {
@@ -147,7 +142,6 @@ void onPreUpdate() {
 
     if (player.getHurtTime() >= 3) {
         start = true;
-        if (modules.getButton(scriptName,"longjump log")) if (bang) client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Starting modify motion"));
         bang = false;
     }
     if (start) {
@@ -178,20 +172,17 @@ void onPreUpdate() {
         if (start) {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
                 modules.disable("Scaffold");
-
-                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Disabled Scaffold &7(Tick)"));
             }
             ticks = 0;
             start = false;
             bang = true;
-            if (modules.getButton(scriptName,"longjump log")) client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: Stopping modify motion"));
+
         }
     }
 
     if (player.onGround() && ticks > 5) {
         if (start) {
             if ((int)modules.getSlider(scriptName,"Scaffold") == 2) {
-                if (modules.getButton(scriptName,"scaffold log"))  client.print(util.color(getPrefixz() + " &7matanku ["+ modes[(int)modules.getSlider(scriptName,"Scaffold")] +"]&f: &7OnGround"));
                 modules.disable("Scaffold");
                 inventory.setSlot(slot);
             }
