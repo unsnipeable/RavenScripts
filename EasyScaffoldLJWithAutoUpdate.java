@@ -1,5 +1,5 @@
 
-boolean start, allow,fbclicked,migi,nearfb,bang = true,LL;
+boolean start, allow,fbclicked,migi,nearfb,onsita,bang = true,LL;
         int ticks,slot,clicktick,tickss,bindz;
 
 String[] modez = new String[]{"Vanilla","Flat","High","SuperFlat"};
@@ -41,6 +41,8 @@ void onLoad() {
     modules.registerDescription(util.color("&7- &9FLAT"));
     modules.registerDescription(util.color("&7- &9HIGH"));
     modules.registerDescription(util.color("&7- &9SUPERFLAT"));
+    modules.registerButton("Stop Scaffold on Bind",true);
+    modules.registerButton("Stop Scaffold on Jump",true);
     modules.registerButton("Mode Switcher",true);
     modules.registerSlider("Switcher keybind", "", 20, keyNames);
 
@@ -51,7 +53,7 @@ void onLoad() {
     modules.registerDescription(util.color("&7- &fLJ when only fb is nearby"));
 
     modules.registerDescription("Script");
-    modules.registerSlider("Prefix color-1",5,colors);
+    modules.registerSlider("Prefix color-1",6,colors);
     modules.registerSlider("Prefix color-2",12,colors);
     modules.registerButton("Intro Skip",false);
     modules.registerDescription(util.color("&7- &fSkip the intro."));
@@ -132,6 +134,8 @@ void onPreUpdate() {
         migi = true;
     }
 
+    if (!start) onsita = false;
+
     clicktick++;
     tickss++;
 
@@ -151,10 +155,20 @@ void onPreUpdate() {
 
     }
 
+    if (modules.getButton(scriptName,"Stop Scaffold on Jump") && keybinds.isKeyDown(keybinds.getKeyIndex("SPACE"))) {
+        start = false;
+        return;
+    }
+
     if (ticks > 0 && ticks < getTickFromMode(1)) {
         if ((int)modules.getSlider(scriptName,"Scaffold") >= 1) {
             inventory.setSlot(slot);
+            if (onsita && !modules.isEnabled("Scaffold") && modules.getButton(scriptName,"Stop Scaffold on Bind")) {
+                start = false;
+                return;
+            } 
             modules.enable("Scaffold");
+            onsita = true;
         }
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Flat") client.setMotion(motion.x,0.01,motion.z);
         if (modez[(int)modules.getSlider(scriptName,"Mode")] == "Vanilla") client.setMotion(motion.x,0.35,motion.z);
